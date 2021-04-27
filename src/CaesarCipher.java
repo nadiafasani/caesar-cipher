@@ -3,6 +3,9 @@
  * @version 26.04.2021
 */
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 public class CaesarCipher{
 
     /**
@@ -35,7 +38,7 @@ public class CaesarCipher{
      * @return il testo modificato
     */
     public static String toRomanNumerals(String text){
-        StringBuilder result = new StringBuilder();
+        /*StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
@@ -54,6 +57,15 @@ public class CaesarCipher{
             }
         }
 
+        return result.toString();*/
+        
+        Pattern p = Pattern.compile("/([0-9])+");
+        Matcher m = p.matcher(text);
+        StringBuffer result = new StringBuffer();
+        while (m.find()) {
+            m.appendReplacement(result, integerToRomanNumerals(Integer.parseInt("/([0-9])+")));
+        }
+        m.appendTail(result);
         return result.toString();
     }
 
