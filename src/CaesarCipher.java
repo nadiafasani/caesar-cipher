@@ -1,12 +1,14 @@
 /**
  * @author Nadia Fasani
- * @version 26.04.2021
+ * @version 01.05.2021
 */
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 public class CaesarCipher{
+
+    private boolean isUnsingEncrypt = false;
 
     /**
      * Il metodo encrypt cripta i messaggi con il cifrario di Cesare.
@@ -15,20 +17,35 @@ public class CaesarCipher{
      * @return il testo codificato
     */
     public static String encrypt(String input, int shift){
+        input = toRomanNumerals(input);
         StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
             if(Character.isLetter(c) && !Character.isWhitespace(c)){
+                if (shift < 0) {
+                    shift = 26 - (-shift % 26);
+                }
+
                 char startLetter = Character.isUpperCase(c) ? 'A' : 'a';
                 c = (char)((c - startLetter + shift) %26 + startLetter);
             }
             result.append(c);
         }
-
-        result = new StringBuilder(toRomanNumerals(result.toString()));
-
+        
         return result.toString();
+    }
+
+    public static String decrypt(String input, int shift){
+        return encrypt(input, -shift);
+    }
+
+    public boolean getIsUsingEncrypt(){
+        return isUnsingEncrypt;
+    }
+
+    public void setIsUsingEncrypt(boolean isUnsingEncrypt){
+        this.isUnsingEncrypt = isUnsingEncrypt;
     }
 
     /**
@@ -38,63 +55,26 @@ public class CaesarCipher{
      * @return il testo modificato
     */
     public static String toRomanNumerals(String text){
-        /*StringBuilder result = new StringBuilder();
-
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
-            String number = "";
-            if(Character.isDigit(c)){
-                number += Character.toString(c);
-
-                if((i == text.length()-1 && Character.isDigit(c)) || Character.isLetter(text.charAt(i+1))){
-                    result.append(integerToRomanNumerals(Integer.parseInt(number)));
-                    System.out.println(number);
-                    number = "";
-                }else{
-                    result.append(c);
-                }
-                System.out.println(result);
-            }
-        }
-
-        return result.toString();*/
-        
-        Pattern p = Pattern.compile("/([0-9])+");
+        Pattern p = Pattern.compile("([0-9])+");
         Matcher m = p.matcher(text);
-        StringBuffer result = new StringBuffer();
+
         while (m.find()) {
-            m.appendReplacement(result, integerToRomanNumerals(Integer.parseInt("/([0-9])+")));
+            text = m.replaceFirst(intToRomanNumerals(m.group()));
+            m = p.matcher(text);
         }
-        m.appendTail(result);
-        return result.toString();
+        
+        return text;
     }
-
-    /**
-     * Il metodo containsNumbers controlla se la stringa
-     * text contiene numeri o no.
-     * @param text il testo da controllare
-     * @return true se text contiene numeri
-    */
-    public static boolean containsNumbers(String text){
-        for (int i = 0; i < text.length(); i++) {
-            if(Character.isDigit(text.charAt(i))){
-                return true;
-            }
-        }
-        return false;
-    }
-
+    
     /**
      * Il metodo integerToRomanNumerals trasforma un
      * numero in input in un numero romano.
      * @param input numero da trasformare
-     * @return numero romano/**
-     * Il metodo toRomanNumerals trasforma i numeri presenti
-     * all'interno di un testo in numeri romani.
-     * @param text il testo da modificare
-     * @return il testo modificato
+     * @return numero romano
     */
-    public static String integerToRomanNumerals(int input) {
+    private static String intToRomanNumerals(String text) {
+        int input = Integer.parseInt(text);
+
         if (input < 1 || input > 3999)
             return "Invalid Roman Number Value";
         String s = "";
@@ -152,5 +132,4 @@ public class CaesarCipher{
         }    
         return s;
     }
-    
 }
