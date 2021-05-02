@@ -5,8 +5,11 @@
 
 import java.awt.Font;
 
+import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -20,6 +23,7 @@ public class Gui extends JFrame{
     public Gui(String title){
         super(title);
         Font calibri = new Font("Calibri", Font.PLAIN, 14);
+        CaesarCipher cipher = new CaesarCipher();
 
         JLabel inputLabel = new JLabel("Input");
         inputLabel.setBounds(20, 5, 100, 30);
@@ -51,6 +55,18 @@ public class Gui extends JFrame{
         resultShiftLabel.setBounds(20,125, 100, 30);
         resultShiftLabel.setFont(calibri);
 
+        JRadioButton radioEncrypt = new JRadioButton("encrypt", true);
+        radioEncrypt.setBounds(20,150, 100, 30);
+        radioEncrypt.setFont(calibri);
+
+        JRadioButton radioDecrypt = new JRadioButton("decrypt");
+        radioDecrypt.setBounds(20,175, 100, 30);
+        radioDecrypt.setFont(calibri);
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(radioEncrypt);
+        group.add(radioDecrypt);
+
         add(inputField);
         add(inputLabel);
         add(outputTextLabel);
@@ -58,25 +74,33 @@ public class Gui extends JFrame{
         add(shiftLabel);
         add(shiftSlider);
         add(resultShiftLabel);
+        add(radioEncrypt);
+        add(radioDecrypt);
 
         shiftSlider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent event) {
               int value = shiftSlider.getValue();
-              resultShiftLabel.setText(value%26 +  "| a -> " + CaesarCipher.encrypt("a", value));
-
-              outputTextArea.setText(addNewLines(CaesarCipher.encrypt(inputField.getText(), value)));
-            }
-          
-            public String addNewLines(String text){
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < text.length(); i++) {
-                    builder.append(text.charAt(i));
-                    if(i%48 == 0 && i != 0){
-                        builder.append("\n");
-                    }
+              if(cipher.getIsUsingEncrypt()){
+                  resultShiftLabel.setText(value +  "| a -> " + CaesarCipher.encrypt("a", value));
+                  outputTextArea.setText(addNewLines(CaesarCipher.encrypt(inputField.getText(), value)));
+                }else {
+                    resultShiftLabel.setText(value +  "| a -> " + CaesarCipher.decrypt("a", value));
+                    outputTextArea.setText(addNewLines(CaesarCipher.decrypt(inputField.getText(), value)));
                 }
-                return builder.toString();
             }
+        });
+
+        
+
+        radioEncrypt.addActionListener   (e -> {
+            cipher.setIsUsingEncrypt(true);
+            resultShiftLabel.setText(shiftSlider.getValue() +  "| a -> " + CaesarCipher.encrypt("a", shiftSlider.getValue()));
+                  outputTextArea.setText(addNewLines(CaesarCipher.encrypt(inputField.getText(), shiftSlider.getValue())));
+        });
+        radioDecrypt.addActionListener   (e -> {
+            cipher.setIsUsingEncrypt(false);
+            resultShiftLabel.setText(shiftSlider.getValue() +  "| a -> " + CaesarCipher.decrypt("a", shiftSlider.getValue()));
+                    outputTextArea.setText(addNewLines(CaesarCipher.decrypt(inputField.getText(), shiftSlider.getValue())));
         });
 
         inputField.getDocument().addDocumentListener(new DocumentListener(){
@@ -98,27 +122,24 @@ public class Gui extends JFrame{
                 outputTextArea.setText(addNewLines(CaesarCipher.encrypt(inputField.getText(), shiftSlider.getValue())));
 
             }
-
-            public String addNewLines(String text){
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < text.length(); i++) {
-                    builder.append(text.charAt(i));
-                    if(i%48 == 0 && i != 0){
-                        builder.append("\n");
-                    }
-                }
-                return builder.toString();
-            }
-            
         });
 
-        
-        
 		setResizable(false);
         setLayout(null);
         setSize(500, 400);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+    }
+
+    public String addNewLines(String text){
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < text.length(); i++) {
+            builder.append(text.charAt(i));
+            if(i%48 == 0 && i != 0){
+                builder.append("\n");
+            }
+        }
+        return builder.toString();
     }
 
 }
