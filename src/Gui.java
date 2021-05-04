@@ -1,6 +1,6 @@
 /**
  * @author Nadia Fasani
- * @version 01.05.2021
+ * @version 04.05.2021
 */
 
 import java.awt.Font;
@@ -38,9 +38,9 @@ public class Gui extends JFrame{
         outputTextLabel.setFont(calibri);
 
         JTextArea outputTextArea= new JTextArea();
-        outputTextArea.setBounds(150, 30, 300, 300);
+        outputTextArea.setBounds(150, 30, 400, 400);
         outputTextArea.setFont(calibri);
-	outputTextArea.setEditable(false);
+        outputTextArea.setEditable(false);
 
         JLabel shiftLabel = new JLabel("Shift");
         shiftLabel.setBounds(20, 80, 100, 30);
@@ -91,8 +91,6 @@ public class Gui extends JFrame{
             }
         });
 
-        
-
         radioEncrypt.addActionListener   (e -> {
             cipher.setIsUsingEncrypt(true);
             resultShiftLabel.setText(shiftSlider.getValue() +  "| a -> " + CaesarCipher.encrypt("a", shiftSlider.getValue()));
@@ -127,7 +125,7 @@ public class Gui extends JFrame{
 
 		setResizable(false);
         setLayout(null);
-        setSize(500, 400);
+        setSize(600, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     }
@@ -136,7 +134,7 @@ public class Gui extends JFrame{
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < text.length(); i++) {
             builder.append(text.charAt(i));
-            if(i%48 == 0 && i != 0){
+            if(i%65 == 0 && i != 0){
                 builder.append("\n");
             }
         }
