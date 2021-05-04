@@ -40,6 +40,7 @@ public class Gui extends JFrame{
         JTextArea outputTextArea= new JTextArea();
         outputTextArea.setBounds(150, 30, 300, 300);
         outputTextArea.setFont(calibri);
+	outputTextArea.setEditable(false);
 
         JLabel shiftLabel = new JLabel("Shift");
         shiftLabel.setBounds(20, 80, 100, 30);
